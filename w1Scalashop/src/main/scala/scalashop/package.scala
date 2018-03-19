@@ -39,44 +39,26 @@ package object scalashop {
   /** Computes the blurred RGBA value of a single pixel of the input image. */
   def boxBlurKernel(src: Img, x: Int, y: Int, radius: Int): RGBA = {
     // TODO implement using while loops
-    //    def avrg(c: => RGBA): Int = {}
+    val (xradmin, xradmax) = (clamp(0, x - radius, x + radius), clamp(src.width, x - radius, x + radius))
+    val (yradmin, yradmax) = (clamp(0, y - radius, y + radius), clamp(src.height, y - radius, y + radius))
 
-    val minx: Int = x - radius
-    val maxx: Int = x + radius
+    var cnt: Int = 0
+    var r, g, b, a = 0
 
-    val miny: Int = y - radius
-    val maxy: Int = y + radius
-
-    var r = 0
-    var g = 0
-    var b = 0
-    var a = 0
-//    println(s"minx = $minx and maxx = $maxx")
-//    println(s"miny = $miny and maxy = $maxy")
-    var curx: Int = clamp(0,minx,maxx)
-    var cnt:Int = 0
-    while (minx <= curx & curx <= maxx) {
-      var cury: Int = clamp(0,miny,maxy)
-      while (miny <= cury & cury <= maxy) {
+    var curx = xradmin
+    while (xradmin <= curx & curx <= xradmax) {
+      var cury: Int = yradmin
+      while (yradmin <= cury & cury <= yradmax) {
         val c: RGBA = src.apply(curx, cury)
-//        println(s"c = $c")
         r += red(c)
         g += green(c)
         b += blue(c)
         a += alpha(c)
-
         cury += 1
-        cnt +=1
+        cnt += 1
       }
       curx += 1
     }
-
-    val ar = r / cnt
-    val ag = g / cnt
-    val ab = b / cnt
-    val aa = a / cnt
-//println(s"ar=$ar; ag=$ag; ab=$ab; aa=$aa;")
-    rgba(ar, ag, ab, aa)
+    rgba(r / cnt, g / cnt, b / cnt, a / cnt)
   }
-
 }

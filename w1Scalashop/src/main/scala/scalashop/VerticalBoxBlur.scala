@@ -43,14 +43,15 @@ object VerticalBoxBlur {
    */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
     // TODO implement this method using the `boxBlurKernel` method
+    val yheight = src.height
     for {
       x <- from until end
-      y <- 0 to src.height
+      y <- 0 until yheight
     } yield {
       println(s"x = $x and y = $y")
-      boxBlurKernel(src, x, y, radius)
-
-      //      dst.update(x, y, boxBlurKernel(src, x, y, radius))
+      val rgb: RGBA = boxBlurKernel(src, x, y, radius)
+      println(rgb)
+      dst.update(x, y, rgb)
     }
   }
 

@@ -48,3 +48,5 @@ import Extensions._
 ((0xff  & 0x0f) >>>1).b
 
 
+val startPoints = Range(0, 1920) by Math.max(1920 / 32,1)
+0 to 1920 by Math.max(1920 / 32,1)

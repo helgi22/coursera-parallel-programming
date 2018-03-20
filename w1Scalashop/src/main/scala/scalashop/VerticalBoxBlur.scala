@@ -1,5 +1,6 @@
 package scalashop
 
+import common._
 import org.scalameter._
 
 object VerticalBoxBlurRunner {
@@ -47,11 +48,10 @@ object VerticalBoxBlur {
     for {
       x <- from until end
       y <- 0 until yheight
+      if x >= 0 && x < src.width
     } yield {
-      println(s"x = $x and y = $y")
-      val rgb: RGBA = boxBlurKernel(src, x, y, radius)
-      println(rgb)
-      dst.update(x, y, rgb)
+      val rgba: RGBA = boxBlurKernel(src, x, y, radius)
+      dst.update(x, y, rgba)
     }
   }
 
@@ -63,7 +63,16 @@ object VerticalBoxBlur {
    */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
     // TODO implement using the `task` construct and the `blur` method
-    ???
+    val colsPerTasks: Int = Math.max(src.width / numTasks, 1)
+    val auxPoint = 0 to src.width by colsPerTasks
+    val tasks = auxPoint.map(t => {
+      task {
+        blur(src, dst, t, t + colsPerTasks, radius)
+      }
+    })
+
+    tasks.foreach(_ join)
+
   }
 
 }

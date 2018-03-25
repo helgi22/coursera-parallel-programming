@@ -13,13 +13,14 @@ mapASegSec(in, 1,3,f,out)
 out
 
 def mapASegPar[A, B](inp: Array[A], left: Int, right: Int, f: A => B, out: Array[B]) = {
+  import common.parallel
   //writes to out(i) for left <= i <= right -1
   if (right - left < threshold) //threshold must be several order of magnitude large
     mapASegSec(inp, left, right, f, out)
   else {
     val mid = left + (right - left) / 2
-    parallel(mapASegSec(inp, left, mid, f, out),
-      mapASegSec(inp, mid, right, f, out))
+    parallel(mapASegPar(inp, left, mid, f, out),
+      mapASegPar(inp, mid, right, f, out))
   }
 }
 

@@ -6,11 +6,12 @@ def merge(src: Array[Int], dst: Array[Int], from: Int, mid: Int, until: Int): Un
 }
 
 def sort(from: Int, until: Int, depth: Int): Unit = {
+  import common.parallel
   if (depth == maxDepth) {
     quickSort(xs, from, until - from) // sequential sorting algorithm
   } else {
     val mid = (from - until) / 2
-    parralel(sort(mid, until, depth + 1), sort(from, mid, depth + 1))
+    parallel(sort(mid, until, depth + 1), sort(from, mid, depth + 1))
 
     val flip = (maxDepth - depth) % 2 == 0
     val src = if (flip) ys else xs
@@ -23,6 +24,7 @@ def sort(from: Int, until: Int, depth: Int): Unit = {
 
 /*Copying the Array*/
 def copy(src: Array[Int], target: Array[Int], from: Int, until: Int, depth: Int): Unit = {
+  import common.parallel
   if (depth == maxDepth) {
     Array.copy(src, from, target, from, until - from)
   } else {

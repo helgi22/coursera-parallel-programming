@@ -26,7 +26,7 @@ class Account(private var amount: Int = 0) {
 
   /* Resolving deadlocks*/
   val uid = getUniqueID
-  def transgerNoDeadlock(target: Account, n: Int) =
+  def transferNoDeadlock(target: Account, n: Int) =
     if (this.uid < target.uid) this.lockAndTransfer(target, n)
     else target.lockAndTransfer(this, -n)
 
@@ -38,8 +38,8 @@ def startThread(a: Account, b: Account, n: Int) = {
   val t = new Thread {
     override def run(): Unit = {
       for (i <- 0 until n) {
-//        a.transfer(b, 1)
-          a.transgerNoDeadlock(b,1)
+//        a.transfer(b, 1)   // with deadlock
+          a.transferNoDeadlock(b,1)
       }
     }
   }
